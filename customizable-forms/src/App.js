@@ -4,7 +4,7 @@ import Navbar from './components/Shared/Navbar';
 import HomePage from './pages/HomePage';
 
 function App() {
-  return (
+  return ( 
     <Router>
       <div>
         <Navbar />
