@@ -16,6 +16,7 @@ const LanguageSwitcher = () => {
     { code: 'ar', label: 'العربية' },
   ];
 
+  
   const [languageIndex, setLanguageIndex] = useState(0);
 
   const selectLanguage = (index) => {

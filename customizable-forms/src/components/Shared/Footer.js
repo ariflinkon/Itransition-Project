@@ -2,8 +2,8 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-light text-center text-lg-start">
-      <div className="text-center p-3" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+    <footer className="bg-dark text-white text-center d-flex align-items-center justify-content-center" style={{ minHeight: '50px' }}>
+      <div className="p-3">
         &copy; {new Date().getFullYear()} Your Company Name. All rights reserved.
       </div>
     </footer>

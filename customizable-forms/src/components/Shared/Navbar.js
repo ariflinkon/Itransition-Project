@@ -1,29 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import DescriptionIcon from '@mui/icons-material/Description'; 
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import LanguageSwitcher from './LanguageSwitcher';
+import SearchBar from '../Search/SearchBar';
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">Customizable Forms</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register">Register</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <AppBar position="static" color="default" sx={{ boxShadow: 'none' }}>
+      <Container maxWidth="lg">
+        <Toolbar disableGutters>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <DescriptionIcon />
+          </IconButton>
+          <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
+            Customizable Forms
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+            <SearchBar style={{ width: '500px' }} />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Button color="inherit" component={Link} to="/">Home</Button>
+            <Button color="inherit" component={Link} to="/login">Login</Button>
+            <Button color="inherit" component={Link} to="/register">Register</Button>
+            <LanguageSwitcher />
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 
