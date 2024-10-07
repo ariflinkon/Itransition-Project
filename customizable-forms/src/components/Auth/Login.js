@@ -7,7 +7,7 @@ const LoginForm = () => {
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-5">
-          <div className="card border-0 rounded-4 shadow-lg custom-card"> {/* Added custom-card for improved styling */}
+          <div className="card border-0 rounded-4 shadow-lg custom-card">
             <div className="card-body p-5">
               <h3 className="card-title text-center mb-4 text-dark fw-bold">Welcome Back</h3>
               <form>
@@ -38,9 +38,9 @@ const LoginForm = () => {
                 </button>
               </form>
               <div className="text-center mt-4">
-                <a href="#" className="text-decoration-none text-primary fw-bold">
+                <button className="btn btn-link text-decoration-none text-primary fw-bold" onClick={() => alert('Forgot password functionality')}>
                   Forgot your password?
-                </a>
+                </button>
               </div>
               <div className="text-center mt-4">
                 <span className="text-secondary">Don't have an account? </span>
