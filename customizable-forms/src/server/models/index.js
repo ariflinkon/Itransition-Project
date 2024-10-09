@@ -3,7 +3,7 @@ const dbConfig = require('../config/db.config');
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
-    dialect: 'mysql', // Specify the dialect explicitly
+    dialect: 'mysql',
     pool: {
       max: dbConfig.pool.max,
       min: dbConfig.pool.min,
