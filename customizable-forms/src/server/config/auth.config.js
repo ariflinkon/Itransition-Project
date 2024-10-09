@@ -1,4 +1,5 @@
-module.exports = {
-    secret: 'test123'
-};
+require('dotenv').config();
 
+module.exports = {
+    secret: process.env.AUTH_SECRET
+};
