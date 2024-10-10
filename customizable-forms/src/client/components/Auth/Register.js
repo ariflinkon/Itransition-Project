@@ -31,7 +31,7 @@ const RegisterForm = () => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const response = await fetch('/api/register', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -48,8 +48,8 @@ const RegisterForm = () => {
           console.log('Registration successful', data);
           // Handle successful registration (e.g., redirect to login page)
         } else {
-          const errorData = await response.json();
-          console.error('Registration failed', errorData);
+          const errorText = await response.text();
+          console.error('Registration failed', errorText);
           // Handle registration failure (e.g., display error message)
         }
       } catch (error) {
