@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ContactsIcon from '@mui/icons-material/Contacts';
-import '../styles/main.css'; 
+import '../styles/main.scss';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -34,33 +34,33 @@ const HomePage = () => {
       <Grid container spacing={4} sx={{ mt: 4 }}>
         {templates.map((template) => (
           <Grid item key={template.id} xs={12} sm={6} md={3}>
-            <Card 
+            <Card
               onClick={() => handleCardClick(template.id)}
-              sx={{ 
-                cursor: 'pointer', 
-                border: '1px solid #e0e0e0', // Light border
-                boxShadow: 'none', // Remove shadow
-                transition: 'border 0.3s ease', 
-                '&:hover': { 
-                  border: '1px solid #6a11cb' 
+              sx={{
+                cursor: 'pointer',
+                border: '1px solid #e0e0e0',
+                boxShadow: 'none',
+                transition: 'border 0.3s ease',
+                '&:hover': {
+                  border: '1px solid #6a11cb'
                 }
               }}
             >
-              <CardContent 
-                sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center', 
-                  height: 150, 
+              <CardContent
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: 150,
                   backgroundColor: '#E3F2FD'
                 }}
               >
                 <template.icon fontSize="large" sx={{ color: '#0D47A1' }} />
               </CardContent>
               <CardContent>
-                <Typography 
-                  variant="subtitle1" 
-                  align="center" 
+                <Typography
+                  variant="subtitle1"
+                  align="center"
                   sx={{ fontWeight: 'medium', color: '#0D47A1', mb: 1 }}
                 >
                   {template.title}
