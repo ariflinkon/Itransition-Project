@@ -1,5 +1,6 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { fetchTemplates } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Card, CardContent, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import AssessmentIcon from '@mui/icons-material/Assessment';
@@ -9,9 +10,20 @@ import '../styles/main.scss';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    fetchTemplates()
+      .then(response => {
+        setTemplates(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching templates:", error);
+      });
+  }, []);
 
   const isAuthenticated = () => {
-    return false;
+    return false; // Update this logic based on your authentication mechanism
   };
 
   const handleCardClick = (templateId) => {
@@ -22,7 +34,7 @@ const HomePage = () => {
     }
   };
 
-  const templates = [
+  const defaultTemplates = [
     { id: 0, title: 'Create from Scratch', icon: AddIcon },
     { id: 1, title: 'Survey Form', icon: AssessmentIcon },
     { id: 2, title: 'Registration Form', icon: AccountBoxIcon },
@@ -31,8 +43,11 @@ const HomePage = () => {
 
   return (
     <Container className="home-page" sx={{ mt: 5 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Templates Gallery
+      </Typography>
       <Grid container spacing={4} sx={{ mt: 4 }}>
-        {templates.map((template) => (
+        {defaultTemplates.map((template) => (
           <Grid item key={template.id} xs={12} sm={6} md={3}>
             <Card
               onClick={() => handleCardClick(template.id)}
