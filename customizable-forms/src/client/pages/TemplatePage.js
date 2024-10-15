@@ -1,36 +1,54 @@
-// src/client/pages/TemplatePage.js
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getTemplateById } from '../services/api';
-import FormEditor from '../components/FormBuilder/FormEditor';
-import FormDisplay from '../components/FormFiller/FormDisplay';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../services/api";
+
 
 const TemplatePage = () => {
   const { id } = useParams();
   const [template, setTemplate] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    getTemplateById(id).then(setTemplate);
+    api.get(`/templates/${id}`)
+      .then(response => {
+        setTemplate(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching template:", error);
+      });
+
+    api.get(`/forms?templateId=${id}`)
+      .then(response => {
+        setForms(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching forms:", error);
+      });
   }, [id]);
 
-  if (!template) {
-    return <p>Loading...</p>;
-  }
-
-  const handleToggleEdit = () => setIsEditing(!isEditing);
-
   return (
-    <div className="template-page p-5">
-      <h1 className="text-2xl font-bold mb-4">{template.title}</h1>
-      <p>{template.description}</p>
-      <button onClick={handleToggleEdit} className="btn-secondary mb-4">
-        {isEditing ? 'View' : 'Edit'}
-      </button>
-      {isEditing ? (
-        <FormEditor template={template} />
+    <div className="template-page">
+      {template ? (
+        <>
+          <h1>{template.title}</h1>
+          <p>{template.description}</p>
+          <div className="forms-section">
+            <h2>Filled Forms</h2>
+            {forms.length ? (
+              forms.map(form => (
+                <div key={form.id} className="form-entry">
+                  <p>Form ID: {form.id}</p>
+                  <p>Submitted by: {form.user}</p>
+                  <p>Submission Date: {form.submittedAt}</p>
+                </div>
+              ))
+            ) : (
+              <p>No forms have been submitted for this template.</p>
+            )}
+          </div>
+        </>
       ) : (
-        <FormDisplay questions={template.questions} />
+        <p>Loading template...</p>
       )}
     </div>
   );
