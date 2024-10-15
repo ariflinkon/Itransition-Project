@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchTemplates } from "../services/api";
-import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 import { Container, Grid, Card, CardContent, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import ContactsIcon from '@mui/icons-material/Contacts';
 import '../styles/main.scss';
 
 const HomePage = () => {
@@ -13,7 +10,7 @@ const HomePage = () => {
   const [templates, setTemplates] = useState([]);
 
   useEffect(() => {
-    fetchTemplates()
+    api.get("/templates")
       .then(response => {
         setTemplates(response.data);
       })
@@ -21,7 +18,7 @@ const HomePage = () => {
         console.error("Error fetching templates:", error);
       });
   }, []);
-
+  
   const isAuthenticated = () => {
     return false; // Update this logic based on your authentication mechanism
   };
@@ -36,9 +33,6 @@ const HomePage = () => {
 
   const defaultTemplates = [
     { id: 0, title: 'Create from Scratch', icon: AddIcon },
-    { id: 1, title: 'Survey Form', icon: AssessmentIcon },
-    { id: 2, title: 'Registration Form', icon: AccountBoxIcon },
-    { id: 3, title: 'Contact Form', icon: ContactsIcon },
   ];
 
   return (
