@@ -1,24 +1,58 @@
-// src/client/pages/UserProfilePage.js
-import React, { useState, useEffect } from 'react';
-import { getUserProfile } from '../services/api';
+import React, { useEffect, useState } from "react";
+import api from "../services/api";
 
 const UserProfilePage = () => {
-  const [profile, setProfile] = useState(null);
+  const [templates, setTemplates] = useState([]);
+  const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    getUserProfile().then(setProfile);
+    api.get("/user/templates")
+      .then(response => {
+        setTemplates(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching user templates:", error);
+      });
+
+    api.get("/user/forms")
+      .then(response => {
+        setForms(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching user forms:", error);
+      });
   }, []);
 
-  if (!profile) {
-    return <p>Loading...</p>;
-  }
-
   return (
-    <div className="user-profile-page p-5">
-      <h1 className="text-2xl font-bold mb-4">Profile</h1>
-      <p>Email: {profile.email}</p>
-      <p>Username: {profile.username}</p>
-      {/* You can add more fields like profile management options */}
+    <div className="user-profile-page">
+      <h1>Your Templates</h1>
+      <div className="templates-list">
+        {templates.length ? (
+          templates.map(template => (
+            <div key={template.id} className="template-card">
+              <h2>{template.title}</h2>
+              <p>{template.description}</p>
+            </div>
+          ))
+        ) : (
+          <p>You haven't created any templates yet.</p>
+        )}
+      </div>
+
+      <h1>Your Forms</h1>
+      <div className="forms-list">
+        {forms.length ? (
+          forms.map(form => (
+            <div key={form.id} className="form-card">
+              <p>Form ID: {form.id}</p>
+              <p>Template: {form.templateTitle}</p>
+              <p>Submission Date: {form.submittedAt}</p>
+            </div>
+          ))
+        ) : (
+          <p>You haven't submitted any forms yet.</p>
+        )}
+      </div>
     </div>
   );
 };
