@@ -1,41 +1,59 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/user.model');
-const authController = express.Router();
+const db = require("../models");
+const User = db.user;
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-// Register a new user
-authController.post('/register', async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, password: hashedPassword });
-        await newUser.save();
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error registering user' });
+// User registration
+exports.register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).send({ message: "Email already in use" });
     }
-});
 
-// Login a user
-authController.post('/login', async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid username or password' });
-        }
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid username or password' });
-        }
-        const token = jwt.sign({ userId: user._id }, process.env.AUTH_SECRET, { expiresIn: '1h' });
-        res.json({ token });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error logging in' });
+    const hashedPassword = bcrypt.hashSync(password, 8);
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: "user"
+    });
+
+    res.status(201).send({ message: "User registered successfully" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+// User login
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
     }
-});
 
-module.exports = authController;
+    const passwordIsValid = bcrypt.compareSync(password, user.password);
+    if (!passwordIsValid) {
+      return res.status(401).send({ message: "Invalid password" });
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: 86400 // 24 hours
+    });
+
+    res.status(200).send({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      accessToken: token
+    });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
