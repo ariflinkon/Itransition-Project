@@ -1,30 +1,39 @@
-// src/client/pages/FormResultsPage.js
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getFormResults } from '../services/api';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../services/api";
 
 const FormResultsPage = () => {
   const { id } = useParams();
-  const [results, setResults] = useState([]);
+  const [form, setForm] = useState(null);
 
   useEffect(() => {
-    getFormResults(id).then(setResults);
+    api.get(`/forms/${id}`)
+      .then(response => {
+        setForm(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching form:", error);
+      });
   }, [id]);
 
   return (
-    <div className="form-results-page p-5">
-      <h1 className="text-2xl font-bold mb-4">Form Results</h1>
-      {results.length === 0 ? (
-        <p>No results found.</p>
+    <div className="form-results-page">
+      {form ? (
+        <>
+          <h1>Form Results</h1>
+          <p>Form ID: {form.id}</p>
+          <p>Submitted by: {form.user}</p>
+          <div className="form-answers">
+            {form.answers.map((answer, index) => (
+              <div key={index} className="answer-entry">
+                <p>Question: {answer.question}</p>
+                <p>Answer: {answer.value}</p>
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
-        <ul>
-          {results.map((result) => (
-            <li key={result.id} className="mb-4">
-              <h2 className="text-xl">{result.user}</h2>
-              <p>{result.answers}</p>
-            </li>
-          ))}
-        </ul>
+        <p>Loading form results...</p>
       )}
     </div>
   );
