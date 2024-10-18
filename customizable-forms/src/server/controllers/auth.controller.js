@@ -2,6 +2,7 @@ const db = require("../models");
 const User = db.user;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const authConfig = require("../config/auth.config");
 
 // User registration
 exports.register = async (req, res) => {
@@ -23,7 +24,8 @@ exports.register = async (req, res) => {
 
     res.status(201).send({ message: "User registered successfully" });
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    console.error("Error during registration:", err); 
+    res.status(500).send({ message: "An error occurred during registration" });
   }
 };
 
@@ -42,7 +44,7 @@ exports.login = async (req, res) => {
       return res.status(401).send({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
       expiresIn: 86400 // 24 hours
     });
 
@@ -54,6 +56,7 @@ exports.login = async (req, res) => {
       accessToken: token
     });
   } catch (err) {
+    console.error("Error during login:", err);
     res.status(500).send({ message: err.message });
   }
 };
