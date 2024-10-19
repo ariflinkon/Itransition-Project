@@ -1,41 +1,51 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import api from "../services/api";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../services/api';
+import { Container, Row, Col, Alert } from 'react-bootstrap';
 
 const FormResultsPage = () => {
-  const { id } = useParams();
-  const [form, setForm] = useState(null);
+  const { id } = useParams(); // Template ID
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get(`/forms/${id}`)
-      .then(response => {
-        setForm(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching form:", error);
-      });
+    const fetchResults = async () => {
+      try {
+        const response = await api.get(`/templates/${id}/results`);
+        setResults(response.data);
+      } catch (err) {
+        setError('Error fetching results.');
+      }
+    };
+    fetchResults();
   }, [id]);
 
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
+  }
+
+  if (!results.length) {
+    return <div>No results yet.</div>;
+  }
+
   return (
-    <div className="form-results-page">
-      {form ? (
-        <>
-          <h1>Form Results</h1>
-          <p>Form ID: {form.id}</p>
-          <p>Submitted by: {form.user}</p>
-          <div className="form-answers">
-            {form.answers.map((answer, index) => (
-              <div key={index} className="answer-entry">
-                <p>Question: {answer.question}</p>
-                <p>Answer: {answer.value}</p>
-              </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <p>Loading form results...</p>
-      )}
-    </div>
+    <Container>
+      <Row>
+        <Col>
+          <h1>Results for Template {id}</h1>
+          {results.map((result, index) => (
+            <div key={index} className="mb-4">
+              <h4>Response {index + 1}</h4>
+              {Object.entries(result.responses).map(([questionId, answer], idx) => (
+                <div key={idx}>
+                  <p>Question {questionId}: {answer}</p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
