@@ -1,56 +1,77 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import api from "../services/api";
-
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../services/api';
+import { Button, Container, Row, Col, Alert, Spinner, Card } from 'react-bootstrap';
+import '.././styles/templatepage.css'; 
 
 const TemplatePage = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Getting template ID from URL
   const [template, setTemplate] = useState(null);
-  const [forms, setForms] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get(`/templates/${id}`)
-      .then(response => {
+    // Fetch template details by ID
+    const fetchTemplate = async () => {
+      try {
+        const response = await api.get(`/api/templates/${id}`);
         setTemplate(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching template:", error);
-      });
-
-    api.get(`/forms?templateId=${id}`)
-      .then(response => {
-        setForms(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching forms:", error);
-      });
+      } catch (err) {
+        setError('Error fetching template.');
+      }
+    };
+    fetchTemplate();
   }, [id]);
 
+  if (error) {
+    return <Alert variant="danger" className="mt-4">{error}</Alert>;
+  }
+
+  if (!template) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '70vh' }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
+
   return (
-    <div className="template-page">
-      {template ? (
-        <>
-          <h1>{template.title}</h1>
-          <p>{template.description}</p>
-          <div className="forms-section">
-            <h2>Filled Forms</h2>
-            {forms.length ? (
-              forms.map(form => (
-                <div key={form.id} className="form-entry">
-                  <p>Form ID: {form.id}</p>
-                  <p>Submitted by: {form.user}</p>
-                  <p>Submission Date: {form.submittedAt}</p>
+    <Container className="mt-5 template-page">
+      <Card className="mb-5 p-4 shadow-sm">
+        <Row>
+          <Col>
+            <h1 className="display-5">{template.title}</h1>
+            <p className="lead text-muted">{template.description}</p>
+          </Col>
+        </Row>
+        <Row className="mt-4">
+          <Col>
+            <Button variant="primary" href={`/fill-form/${template.id}`} size="lg">
+              Fill Out Template
+            </Button>
+          </Col>
+        </Row>
+      </Card>
+
+      <Card className="p-4 shadow-sm">
+        <Row>
+          <Col>
+            <h2 className="mb-4">Questions</h2>
+            {template.questions.length > 0 ? (
+              template.questions.map((question, index) => (
+                <div key={index} className="mb-4">
+                  <strong className="fs-5">{index + 1}. {question.text}</strong>
+                  <p className="text-muted">Type: {question.type}</p>
                 </div>
               ))
             ) : (
-              <p>No forms have been submitted for this template.</p>
+              <Alert variant="warning">No questions available.</Alert>
             )}
-          </div>
-        </>
-      ) : (
-        <p>Loading template...</p>
-      )}
-    </div>
+          </Col>
+        </Row>
+      </Card>
+    </Container>
   );
 };
 
