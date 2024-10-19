@@ -6,7 +6,7 @@ const UserProfilePage = () => {
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    api.get("/user/templates")
+    api.get("/api/get/templates")
       .then(response => {
         setTemplates(response.data);
       })
@@ -14,6 +14,7 @@ const UserProfilePage = () => {
         console.error("Error fetching user templates:", error);
       });
 
+      
     api.get("/user/forms")
       .then(response => {
         setForms(response.data);
