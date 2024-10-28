@@ -1,9 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const Question = sequelize.define('question', {
-/*     title: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    }, */
+
     text: {
       type: Sequelize.STRING,
       allowNull: false,

@@ -1,6 +1,11 @@
 const db = require("../models");
 const User = db.user;
 
+// Helper function to validate ID
+const isValidId = (id) => {
+  return Number.isInteger(Number(id)) && Number(id) > 0;
+};
+
 // Get all users (Admin Only)
 exports.getAllUsers = async (req, res) => {
   try {
@@ -13,8 +18,13 @@ exports.getAllUsers = async (req, res) => {
 
 // Block a user
 exports.blockUser = async (req, res) => {
+  const userId = req.params.id;
+  if (!isValidId(userId)) {
+    return res.status(400).send({ message: "Invalid user ID" });
+  }
+
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(userId);
 
     if (!user) {
       return res.status(404).send({ message: "User not found" });
@@ -31,8 +41,13 @@ exports.blockUser = async (req, res) => {
 
 // Unblock a user
 exports.unblockUser = async (req, res) => {
+  const userId = req.params.id;
+  if (!isValidId(userId)) {
+    return res.status(400).send({ message: "Invalid user ID" });
+  }
+
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(userId);
 
     if (!user) {
       return res.status(404).send({ message: "User not found" });
@@ -49,8 +64,13 @@ exports.unblockUser = async (req, res) => {
 
 // Delete a user
 exports.deleteUser = async (req, res) => {
+  const userId = req.params.id;
+  if (!isValidId(userId)) {
+    return res.status(400).send({ message: "Invalid user ID" });
+  }
+
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(userId);
 
     if (!user) {
       return res.status(404).send({ message: "User not found" });

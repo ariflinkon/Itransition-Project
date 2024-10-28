@@ -5,18 +5,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LanguageSwitcher = () => {
   const languages = [
-    { code: 'en', label: 'English' },
-    { code: 'es', label: 'Español' },
-    { code: 'fr', label: 'Français' },
-    { code: 'de', label: 'Deutsch' },
-    { code: 'it', label: 'Italiano' },
-    { code: 'zh', label: '中文' },
-    { code: 'ja', label: '日本語' },
-    { code: 'ru', label: 'Русский' },
-    { code: 'ar', label: 'العربية' },
+    { code: 'en', label: 'English', shortName: 'EN' },
+    { code: 'es', label: 'Español', shortName: 'ES' },
+    { code: 'fr', label: 'Français', shortName: 'FR' },
+    { code: 'de', label: 'Deutsch', shortName: 'DE' },
+    { code: 'it', label: 'Italiano', shortName: 'IT' },
+    { code: 'zh', label: '中文', shortName: 'ZH' },
+    { code: 'ja', label: '日本語', shortName: 'JA' },
+    { code: 'ru', label: 'Русский', shortName: 'RU' },
+    { code: 'ar', label: 'العربية', shortName: 'AR' },
   ];
 
-  
   const [languageIndex, setLanguageIndex] = useState(0);
 
   const selectLanguage = (index) => {
@@ -28,7 +27,7 @@ const LanguageSwitcher = () => {
       <Dropdown>
         <Dropdown.Toggle variant="dark" id="languageDropdown" style={{ padding: '3px 10px', borderRadius: '5px' }}>
           <FaGlobe size={20} className="text-white mr-2" />
-          <span className="text-white">{languages[languageIndex].label}</span>
+          <span className="text-white">{languages[languageIndex].shortName}</span>
         </Dropdown.Toggle>
 
         <Dropdown.Menu style={{ borderRadius: '5px' }}>

@@ -6,6 +6,7 @@
 /.pnp
 .pnp.js
 Diagram.txt
+UX_flow_diagram.txt
 # testing
 /coverage
 

@@ -1,0 +1,28 @@
+/*  template page css */
+ .template-page {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .template-page h1 {
+    font-weight: 700;
+  }
+  
+  .template-page h2 {
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .card {
+    border-radius: 8px;
+  }
+  
+  .card h2 {
+    color: #343a40;
+  }
+  
+  .card .fs-5 {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import TemplatePage from './pages/TemplatePage';
@@ -10,11 +10,10 @@ import Navbar from './components/Shared/Navbar';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Footer from './components/Shared/Footer';
+import FormEditor from './components/FormBuilder/FormEditor';
 import './i18n'; // For internationalization
 
 const App = () => {
-  const [searchResults, setSearchResults] = useState([]);
-
   return (
     <Router>
       <Navbar />
@@ -25,9 +24,10 @@ const App = () => {
           <Route path="/forms/:id/results" element={<FormResultsPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/dashboard" element={<UserDashboard />} />
+          <Route path="/user" element={<UserDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/form-editor" element={<FormEditor />} />
         </Routes>
       </div>
       <Footer />

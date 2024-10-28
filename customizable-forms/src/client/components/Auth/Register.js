@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/auth.css';
+import api from '../../services/api';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const RegisterForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -31,30 +34,23 @@ const RegisterForm = () => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: formData.fullname,
-            email: formData.email,
-            password: formData.password,
-          }),
+        const response = await api.post('/api/auth/register', {
+          name: formData.fullname,
+          email: formData.email,
+          password: formData.password,
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Registration successful', data);
-          // Handle successful registration (e.g., redirect to login page)
+        if (response.status === 201) {
+          console.log('Registration successful');
+          navigate('/login'); // Redirect to login page after successful registration
         } else {
           const errorText = await response.text();
           console.error('Registration failed', errorText);
-          // Handle registration failure (e.g., display error message)
+          setError('Registration failed. Please try again.');
         }
-      } catch (error) {
-        console.error('Error submitting form', error);
-        // Handle network or other errors
+      } catch (err) {
+        console.error('Error submitting form', err);
+        setError('Registration failed. Please try again.');
       }
     } else {
       setErrors(validationErrors);
@@ -68,6 +64,7 @@ const RegisterForm = () => {
           <div className="card border-0 rounded-4 shadow-lg custom-card">
             <div className="card-body p-5">
               <h3 className="card-title text-center mb-4 text-dark fw-bold">Create Your Account</h3>
+              {error && <div className="text-danger text-center mb-4">{error}</div>}
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-4">
                   <label htmlFor="fullname" className="form-label text-muted fw-semibold">
@@ -147,5 +144,6 @@ const RegisterForm = () => {
     </div>
   );
 };
+
 
 export default RegisterForm;

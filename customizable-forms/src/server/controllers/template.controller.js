@@ -1,6 +1,7 @@
 const db = require('../models');
 const Template = db.template;
 const Question = db.question;
+const User = db.user;
 
 // Controller to handle fetching all templates
 exports.getAllTemplates = async (req, res) => {
@@ -37,5 +38,35 @@ exports.getResults = async (req, res) => {
     res.status(200).send(forms);
   } catch (error) {
     res.status(500).send({ message: 'Error fetching results' });
+  }
+};
+
+
+
+// Controller to handle creating a new template
+
+exports.saveTemplate = async (req, res) => {
+  try {
+    const { title, description, questions, userId } = req.body;
+
+    // Check if user exists
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid userId, user does not exist' });
+    }
+
+    // Proceed with template creation
+    const newTemplate = await Template.create({ title, description, userId });
+
+    // Save associated questions
+    if (questions && questions.length > 0) {
+      const questionPromises = questions.map(q => Question.create({ ...q, templateId: newTemplate.id }));
+      await Promise.all(questionPromises);
+    }
+
+    res.status(201).json(newTemplate);
+  } catch (error) {
+    console.error("Error saving template", error);
+    res.status(500).json({ error: 'Error saving template' });
   }
 };
