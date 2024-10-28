@@ -11,21 +11,20 @@ exports.register = async (req, res) => {
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).send({ message: "Email already in use" });
+      return res.status(400).json({ message: "Email already in use" });
     }
 
-    const hashedPassword = bcrypt.hashSync(password, 8);
+    const hashedPassword = await bcrypt.hash(password, 8); // Use async bcrypt hashing
     const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: "user"
     });
 
-    res.status(201).send({ message: "User registered successfully" });
+    res.status(201).json({ message: "User registered successfully", userId: newUser.id });
   } catch (err) {
-    console.error("Error during registration:", err); 
-    res.status(500).send({ message: "An error occurred during registration" });
+    console.error("Error during registration:", err);
+    res.status(500).json({ message: "An error occurred during registration" });
   }
 };
 
@@ -36,27 +35,26 @@ exports.login = async (req, res) => {
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(404).send({ message: "User not found" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const passwordIsValid = bcrypt.compareSync(password, user.password);
+    const passwordIsValid = await bcrypt.compare(password, user.password); // Use async bcrypt comparison
     if (!passwordIsValid) {
-      return res.status(401).send({ message: "Invalid password" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign({ id: user.id }, authConfig.secret, {
       expiresIn: 86400 // 24 hours
     });
 
-    res.status(200).send({
+    res.status(200).json({
       id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role,
       accessToken: token
     });
   } catch (err) {
     console.error("Error during login:", err);
-    res.status(500).send({ message: err.message });
+    res.status(500).json({ message: "An error occurred during login" });
   }
 };

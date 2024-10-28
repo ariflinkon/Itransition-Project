@@ -1,15 +1,16 @@
-const Sequelize = require('sequelize');
+// src/server/models/index.js
+const { Sequelize, DataTypes } = require('sequelize');
 const dbConfig = require('../config/db.config');
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-    host: dbConfig.HOST,
-    dialect: 'mysql',
-    pool: {
-      max: dbConfig.pool.max,
-      min: dbConfig.pool.min,
-      acquire: dbConfig.pool.acquire,
-      idle: dbConfig.pool.idle
-    }
+  host: dbConfig.HOST,
+  dialect: 'mysql',
+  pool: {
+    max: dbConfig.pool.max,
+    min: dbConfig.pool.min,
+    acquire: dbConfig.pool.acquire,
+    idle: dbConfig.pool.idle
+  }
 });
 
 const db = {};
@@ -26,13 +27,9 @@ sequelize.authenticate()
   });
 
 // Import models
-db.user = require('./user.model.js')(sequelize, Sequelize);
-db.template = require('./template.model.js')(sequelize, Sequelize);
-db.form = require('./form.model.js')(sequelize, Sequelize);
-db.question = require('./question.model.js')(sequelize, Sequelize);
-
-// Associations
-db.template.hasMany(db.question, { foreignKey: 'templateId' });  // A Template has many Questions
-db.question.belongsTo(db.template, { foreignKey: 'templateId' }); // A Question belongs to a Template
+db.user = require('./user.model.js')(sequelize, DataTypes);
+db.response = require('./response.model.js')(sequelize, DataTypes);
+db.form = require('./form.model.js')(sequelize, DataTypes);
+db.image = require('./image.model.js')(sequelize, DataTypes);
 
 module.exports = db;

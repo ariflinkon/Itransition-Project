@@ -1,36 +1,26 @@
-module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("user", {
-      
-      id: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        allowNull: false,
-        primaryKey: true,
-      },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      email: {
-        type: Sequelize.STRING,
-        unique: true,
-        allowNull: false
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      role: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: "user"
-      },
-      isBlocked: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      }
-    });
-  
-    return User;
-  };
-  
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    createdForms: {
+      type: DataTypes.JSON,
+      allowNull: true
+    }
+  }, {
+    timestamps: true,
+    tableName: 'Users'
+  });
+
+  return User;
+};

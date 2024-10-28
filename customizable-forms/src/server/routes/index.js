@@ -1,12 +1,15 @@
-const express = require('express');
-const authRoutes = require('./auth.routes');
-const templateRoutes = require('./template.routes');
-const userRoutes = require('./user.routes');
-const router = express.Router();
+var router = require('express').Router()
 
-// Use the auth routes
-router.use('/auth', authRoutes);
-router.use('/', templateRoutes);
-router.use('/', userRoutes);
+const UserRouter = require('./auth.routes')
+const FormRouter = require('./form.routes')
+
+
+router.use('/auth', UserRouter)
+router.use('/form', FormRouter)
+
+router.get('/', (req, res)=>{
+    res.send("Router.js working fine")
+})
+
 
 module.exports = router;

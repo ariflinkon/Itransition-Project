@@ -1,26 +1,28 @@
 const jwt = require("jsonwebtoken");
 const db = require("../models");
 const User = db.user;
+const authConfig = require("../config/auth.config");
 
 const authMiddleware = async (req, res, next) => {
   const token = req.headers["x-access-token"];
 
   if (!token) {
-    return res.status(403).send({ message: "No token provided!" });
+    return res.status(403).json({ message: "No token provided!" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, authConfig.secret);
     const user = await User.findByPk(decoded.id);
 
     if (!user) {
-      return res.status(404).send({ message: "User not found." });
+      return res.status(404).json({ message: "User not found." });
     }
 
     req.userId = decoded.id;
     next();
   } catch (err) {
-    return res.status(401).send({ message: "Unauthoried!" });
+    console.error("Authorization error:", err);
+    return res.status(401).json({ message: "Unauthorized!" });
   }
 };
 
