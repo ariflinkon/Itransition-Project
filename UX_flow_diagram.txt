@@ -1,0 +1,377 @@
+HomePage.js [Landing Page]
+  |
+  +--> Navbar.js [Navigation Bar] 
+  |        |
+  |        +--> Login.js [Login] --------> Authenticated? --------> UserDashboard.js [User Dashboard]
+  |        |                                      |                    |
+  |        |                                      +--> No? ------------> Register.js [Register]
+  |        |
+  |        +--> SocialAuth.js [Social Media Login]
+  |        +--> LanguageSwitcher.js [Language Selection]
+  |
+  +--> TemplatePage.js [View/Edit Template]
+  |        |
+  |        +--> FormEditor.js [Create/Edit Form]
+  |               |
+  |               +--> QuestionAdder.js [Add Question] 
+  |                      |
+  |                      +--> SingleLineInput.js [Single Line Question Type]
+  |                      +--> MultiLineInput.js [Multi Line Question Type]
+  |                      +--> IntegerInput.js [Integer Question Type]
+  |                      +--> CheckboxInput.js [Checkbox Question Type]
+  |
+  +--> FormResultsPage.js [View Form Results]
+  |
+  +--> UserProfilePage.js [User Profile Management]
+           |
+           +--> TagInput.js [Autocomplete for Tags]
+  |
+  +--> SearchBar.js [Search Functionality] 
+           |
+           +--> SearchResults.js [Display Search Results]
+
+UserDashboard.js [After login]
+  |
+  +--> FormFiller.js [Filling Forms]
+  |        |
+  |        +--> FormDisplay.js [View Form to Fill]
+  |        +--> AnswerForm.js [Submit Form Answers]
+  |
+  +--> AdminDashboard.js [Admin-Only Interface for Managing Users]
+
+
+
+  =================================================================================
+
+                                       [ Start ]
+                                           |
+                                           v
+                              +---------------------------+
+                              |       Home Page           |
+                              | (Templates Gallery/Search)| <---------------+
+                              +---------------------------+                 |
+                                           |                                |
+                                           |                                |
+                                           v                                |
+                                +-------------------------+                 |
+                                | Template Page (View)    |                 |
+                                | (Non-authenticated user |                 |
+                                |  view mode)             |                 |
+                                +-------------------------+                 |
+                                           |                                |
+                                           |                                |
+                                           v                                |
+                              +-----------------------------+               |
+                              |   Register/Login Page       | <-------------+
+                              | (User Authentication)       |
+                              +-----------------------------+
+                                           |
+                                           v
+                           (Authenticated/Registered User)
+                                           |
+                                           |
+              +----------------------------+-----------------------------+
+              |                                                            |
+              v                                                            v
+   +------------------------+                                  +----------------------+
+   |  User Dashboard        |                                  |   Admin Dashboard    |
+   | (Manage templates,     |                                  | (Manage users,       |
+   |  forms, search, etc.)  |                                  |  templates, etc.)    |
+   +------------------------+                                  +----------------------+
+              |                                                            |
+              | (Click Template/Create New Template)                       | (Click User)
+              v                                                            v
+   +------------------------+                                   +----------------------+
+   |   Template Creation    |                                   |  User Management     |
+   | (Create, edit, delete, |                                   | (Block, unblock,     |
+   |  reorder questions)    |                                   |  promote, demote)    |
+   +------------------------+                                   +----------------------+
+              |                                                            |
+              | (Click Form)                                                |
+              v                                                            |
+   +------------------------+                                   +----------------------+
+   |   Form Filling Page    |                                   | Admin Template       |
+   | (Submit responses to   |                                   | Management           |
+   |  questions)            |                                   | (View/edit any form) |
+   +------------------------+                                   +----------------------+
+              |
+              | (Submit Form)
+              v
+   +------------------------+
+   |  Form Results Page     |
+   | (View analysis,        |
+   |  aggregated results)   |
+   +------------------------+
+
+                              +-------------------------------+
+                              |      Search Functionality     |
+                              | (Full-text search on templates|
+                              |  and forms)                   |
+                              +-------------------------------+
+
+Backend Interaction Flow:
+
+  +----------------------+     +---------------------+     +-----------------------+
+  |   User Registration  |     |   Template CRUD     |     |     Form Submission   |
+  | - POST /auth/register|---->| - POST /templates   |---->| - POST /forms         |
+  | - POST /auth/login   |     | - PUT /templates/id |     | - GET /forms          |
+  +----------------------+     +---------------------+     +-----------------------+
+
+  +----------------------+     +---------------------+     +------------------------+
+  |   Search Templates   |     |   Admin Management  |     |   Form Management   -  |
+  | - GET /search        |---->| - POST /users/promote|---->| - POST /forms/analyze |
+  | - GET /templates     |     | - DELETE /users     |     | - GET /forms/results - |
+  +----------------------+     +---------------------+     +------------------------+
+
+User Roles and Features:
+
+1. **Non-Authenticated Users**:
+   - Can view templates in read-only mode.
+   - Can perform full-text search for templates.
+   - Must register or log in to fill forms or create templates.
+
+2. **Authenticated Users**:
+   - Can create new templates and customize them with different question types.
+   - Can fill out forms created by other users or themselves.
+   - Can manage their own templates and filled forms in a personal dashboard.
+   - Can analyze responses to forms they created.
+
+3. **Administrators**:
+   - Can manage all templates and filled forms across the platform.
+   - Can manage users (promote, demote, block, or unblock them).
+   - Can access any template, edit it, or analyze its data.
+   - Admins can remove themselves from the admin role.
+
+Functional Flow:
+
+- **Template Creation**:
+  - Users create customizable templates with various question types (single-line, multi-line, integer, checkbox).
+  - Templates can be marked as public or restricted to specific users.
+  - Admins and creators can manage the questions and template properties.
+
+- **Form Filling**:
+  - Authenticated users can fill out any public templates or those shared with them.
+  - Form responses are automatically saved and linked to the user who filled out the form.
+
+- **Search and Dashboard**:
+  - Users can search for templates based on title, description, or tags.
+  - The dashboard provides users with a sortable table of their templates and filled forms.
+
+- **Admin Features**:
+  - Admins can manage all users, promote or demote them, and manage access to templates and forms.
+  - Admins can view and edit any template or form on the platform.
+
+Non-functional Flow:
+
+- **Responsive Design**:
+  - The application is optimized for both mobile and desktop experiences, ensuring accessibility across different screen sizes.
+
+- **Theme and Language Support**:
+  - Users can switch between light and dark themes.
+  - The interface supports English and one additional language.
+
+Security and Performance:
+
+- **User Authentication**:
+  - Passwords must be encrypted, and sensitive actions require user authentication.
+  - Only authenticated users can create templates or fill out forms.
+
+- **Performance**:
+  - Full-text search should be responsive, with results returning within 2 seconds.
+
+- **Backup and Recovery**:
+  - Form responses and templates must be backed up to prevent data loss.
+
+=====================================================================
+
+                                       [ Start ]
+                                           |
+                                           v
+                              +---------------------------+
+                              |   public/index.html        |
+                              |       Home Page           |
+                              | (Templates Gallery/Search)| <---------------+
+                              +---------------------------+                 |
+                                           |                                |
+                                           |                                |
+                                           v                                |
+                      +-------------------------------+                    |
+                      | src/pages/TemplatePage.js      |                    |
+                      | Template Page (View Mode)      |                    |
+                      | (Non-authenticated user view)  |                    |
+                      +-------------------------------+                    |
+                                           |                                |
+                                           |                                |
+                                           v                                |
+                              +-----------------------------+               |
+                              | src/components/Auth/Login.js | <-------------+
+                              | src/components/Auth/Register.js|
+                              |    Register/Login Page        |
+                              | (User Authentication)         |
+                              +-----------------------------+
+                                           |
+                                           v
+                           (Authenticated/Registered User)
+                                           |
+                                           |
+              +----------------------------+-----------------------------+
+              |                                                            |
+              v                                                            v
+   +-----------------------+                                  +----------------------+
+   | src/components/        |                                  | src/components/      |
+   | Dashboard/UserDashboard.js|                              | Dashboard/AdminDashboard.js |
+   | (Manage templates,     |                                  | (Manage users,       |
+   |  forms, search, etc.)  |                                  |  templates, etc.)    |
+   +-----------------------+                                  +----------------------+
+              |                                                            |
+              | (Click Template/Create New Template)                       | (Click User)
+              v                                                            v
+   +-----------------------------+                                +----------------------+
+   | src/components/FormBuilder/  |                                | src/components/      |
+   | FormEditor.js                |                                | AdminDashboard.js     |
+   | (Create, edit, delete,       |                                | User Management       |
+   | reorder questions)           |                                | (Block, unblock,      |
+   +-----------------------------+                                | promote, demote users)|
+              |                                                            |
+              | (Click Form)                                                |
+              v                                                            |
+   +-------------------------------+                           +----------------------+
+   | src/components/FormFiller/    |                           | Admin Template       |
+   | FormDisplay.js                |                           | Management           |
+   |(Submit responses to questions)|                           | (View/edit any form) |
+   +-------------------------------+                           +----------------------+
+              |
+              | (Submit Form)
+              v
+   +------------------------------+
+   | src/pages/FormResultsPage.js |
+   | (View analysis,              |
+   |  aggregated results)         |
+   +------------------------------+
+
+                              +----------------------------------------+
+                              | src/components/Search/SearchBar.js     |
+                              | src/components/Search/SearchResults.js |
+                              |      Search Functionality              |
+                              | (Full-text search on templates         |
+                              |  and forms)                            |
+                              +----------------------------------------+
+
+Backend Interaction Flow (Backend Files):
+
+  +----------------------+     +---------------------+     +----------------------+
+  | src/controllers/     |     | src/controllers/    |     | src/controllers/      |
+  | auth.controller.js   |     | template.controller.js|    | form.controller.js   |
+  | - POST /auth/register|     | - POST /templates   |     | - POST /forms         |
+  | - POST /auth/login   |     | - PUT /templates/id |     | - GET /forms          |
+  +----------------------+     +---------------------+     +----------------------+
+
+  +----------------------+     +---------------------+     +----------------------+
+  | src/controllers/      |     | src/controllers/    |     | src/controllers/      |
+  | search.controller.js  |     | user.controller.js  |     | form.controller.js    |
+  | - GET /search         |     | - POST /users/promote|    | - POST /forms/analyze |
+  | - GET /templates      |     | - DELETE /users     |    | - GET /forms/results  |
+  +----------------------+     +---------------------+     +----------------------+
+
+User Roles and Features:
+
+1. **Non-Authenticated Users**:
+   - Can view templates in read-only mode.
+   - Can perform full-text search for templates.
+   - Must register or log in to fill forms or create templates.
+
+2. **Authenticated Users**:
+   - Can create new templates and customize them with different question types.
+   - Can fill out forms created by other users or themselves.
+   - Can manage their own templates and filled forms in a personal dashboard.
+   - Can analyze responses to forms they created.
+
+3. **Administrators**:
+   - Can manage all templates and filled forms across the platform.
+   - Can manage users (promote, demote, block, or unblock them).
+   - Can access any template, edit it, or analyze its data.
+   - Admins can remove themselves from the admin role.
+
+Functional Flow (Frontend Components):
+
+- **Template Creation**:
+  - Users create customizable templates with various question types.
+  - `src/components/FormBuilder/FormEditor.js` manages template creation with questions and tags.
+  - Users can reorder questions using drag-and-drop (UI).
+
+- **Form Filling**:
+  - Authenticated users can fill out public templates or restricted ones they have access to.
+  - `src/components/FormFiller/FormDisplay.js` displays the form to the user.
+  - `src/components/FormFiller/AnswerForm.js` handles the form submission.
+
+- **Search and Dashboard**:
+  - `src/components/Search/SearchBar.js` and `src/components/Search/SearchResults.js` handle template search functionality.
+  - The dashboard provides users with a sortable table of their templates and filled forms.
+  - `src/components/Dashboard/UserDashboard.js` and `src/components/Dashboard/AdminDashboard.js` handle user-specific and admin-specific dashboards.
+
+- **Admin Features**:
+  - Admins manage all users, promote/demote them, and manage access to templates and forms.
+  - Admins can view/edit any template or form.
+
+Non-functional Flow (Styling and Theming):
+
+- **Responsive Design**:
+  - The application is optimized for both mobile and desktop experiences using CSS (`src/styles/main.scss`).
+  - Themes are handled via `src/styles/themes/light.scss` and `src/styles/themes/dark.scss`.
+
+- **Theme and Language Support**:
+  - Users can switch between light and dark themes.
+  - The interface supports multiple languages via `src/components/Shared/LanguageSwitcher.js`.
+
+Security and Performance:
+
+- **User Authentication**:
+  - Passwords are encrypted, and sensitive actions require user authentication.
+  - User registration and login are handled by `src/controllers/auth.controller.js` and corresponding routes.
+
+- **Performance**:
+  - Full-text search should return results within 2 seconds via `src/controllers/search.controller.js`.
+
+- **Backup and Recovery**:
+  - Form responses and templates must be backed up to prevent data loss.
+
+---
+
+### File Mapping for Major Functionalities:
+
+1. **Home Page**:
+   - `public/index.html`
+   - `src/pages/HomePage.js`
+
+2. **Template Creation**:
+   - `src/components/FormBuilder/FormEditor.js`
+   - `src/components/FormBuilder/QuestionAdder.js`
+
+3. **Form Filling**:
+   - `src/components/FormFiller/FormDisplay.js`
+   - `src/components/FormFiller/AnswerForm.js`
+
+4. **Dashboard**:
+   - `src/components/Dashboard/UserDashboard.js`
+   - `src/components/Dashboard/AdminDashboard.js`
+
+5. **Authentication**:
+   - `src/components/Auth/Login.js`
+   - `src/components/Auth/Register.js`
+   - `src/components/Auth/SocialAuth.js`
+
+6. **Search**:
+   - `src/components/Search/SearchBar.js`
+   - `src/components/Search/SearchResults.js`
+
+7. **Admin Management**:
+   - `src/components/Dashboard/AdminDashboard.js`
+
+8. **Styling**:
+   - `src/styles/main.scss`
+   - `src/styles/themes/light.scss`
+   - `src/styles/themes/dark.scss`
+
+---
+
+This diagram provides an overview of how the different files are connected and how they support the user flow and system functionalities described in the project. Let me know if you need further modifications!

@@ -1,0 +1,85 @@
+# Itransition Project diagram
+
+project-root/
+├── public/                          // Public resources for the web application
+│   ├── index.html                   // Main HTML file
+│   └── manifest.json                // Metadata about the application
+├── src/                             // Source files for both frontend and backend
+│   ├── client/                      // Frontend files (React)
+│   │   ├── components/              // Reusable React components
+│   │   │   ├── FormBuilder/         // Form builder-related components
+│   │   │   │   ├── FormEditor.js    // Component to create and edit templates
+│   │   │   │   ├── QuestionAdder.js // Component to add questions to a form
+│   │   │   │   └── QuestionTypes/   // Sub-components for different question types
+│   │   │   │       ├── SingleLineInput.js
+│   │   │   │       ├── MultiLineInput.js
+│   │   │   │       ├── IntegerInput.js
+│   │   │   │       └── CheckboxInput.js
+│   │   │   ├── FormFiller/          // Components for filling forms
+│   │   │   │   ├── FormDisplay.js   // Component for displaying a form to fill out
+│   │   │   │   └── AnswerForm.js    // Component for answering a form
+│   │   │   ├── Dashboard/           // User and Admin dashboard components
+│   │   │   │   ├── UserDashboard.js // Component for users to manage their templates and forms
+│   │   │   │   └── AdminDashboard.js// Admin interface for managing users and content
+│   │   │   ├── Auth/                // Authentication components
+│   │   │   │   ├── Login.js         // User login
+│   │   │   │   ├── Register.js      // User registration
+│   │   │   │   └── SocialAuth.js    // Social media authentication
+│   │   │   ├── Search/              // Search functionality
+│   │   │   │   ├── SearchBar.js     // Search bar component
+│   │   │   │   └── SearchResults.js // Component to display search results
+│   │   │   ├── Shared/              // Shared components across the app
+│   │   │   │   ├── Navbar.js        // Navigation bar
+│   │   │   │   ├── Footer.js        // Footer
+│   │   │   │   ├── TagInput.js      // Autocomplete tag input
+│   │   │   │   └── LanguageSwitcher.js // Component to change UI language
+│   │   ├── pages/                   // Pages for routing
+│   │   │   ├── HomePage.js          // Main landing page with templates gallery
+│   │   │   ├── TemplatePage.js      // Page to view/edit a specific template
+│   │   │   ├── FormResultsPage.js   // Page for viewing results of a form
+│   │   │   └── UserProfilePage.js   // User profile management page
+│   │   ├── services/                // API service handlers
+│   │   │   ├── api.js               // Functions for making API calls to the backend
+│   │   ├── App.js                   // Main App component
+│   │   ├── index.js                 // Entry point for React
+│   │   ├── i18n.js                  // Internationalization configuration
+│   │   └── styles/                  // CSS/SCSS files
+│   │       ├── main.scss            // Main styling file
+│   │       └── themes/              // Theme-specific styles
+│   │           ├── light.scss       // Light theme styles
+│   │           └── dark.scss        // Dark theme styles
+│   ├── server/                      // Backend files (Node.js and Express)
+│   │   ├── config/                  // Configuration files
+│   │   │   ├── db.config.js         // Database connection configuration
+│   │   │   └── auth.config.js       // Authentication configuration
+│   │   ├── controllers/             // Controllers for handling requests
+│   │   │   ├── template.controller.js // Controller for templates and forms
+│   │   │   ├── user.controller.js   // Controller for user management
+│   │   │   ├── auth.controller.js   // Controller for authentication
+│   │   │   └── search.controller.js // Controller for handling searches
+│   │   ├── models/                  // Sequelize models
+│   │   │   ├── index.js             // Initializes all models
+│   │   │   ├── user.model.js        // User model (roles, permissions, etc.)
+│   │   │   ├── template.model.js    // Template model
+│   │   │   ├── form.model.js        // Filled form model
+│   │   │   └── question.model.js    // Question model (linked to templates)
+│   │   ├── routes/                  // API Routes
+│   │   │   ├── template.routes.js   // Routes for template-related requests
+│   │   │   ├── user.routes.js       // Routes for user management
+│   │   │   ├── auth.routes.js       // Routes for authentication
+│   │   │   └── search.routes.js     // Routes for search functionality
+│   │   ├── middlewares/             // Middleware functions
+│   │   │   ├── auth.middleware.js   // Authentication middleware
+│   │   │   ├── role.middleware.js   // Role-based access control
+│   │   ├── utils/                   // Utility functions
+│   │   │   ├── emailService.js      // Service to send emails to users
+│   │   │   ├── imageUploader.js     // Cloud image uploading logic
+│   │   │   └── markdownParser.js    // Utility for parsing markdown descriptions
+│   │   └── server.js                // Main entry point for the backend
+├── database/                        // Database scripts
+│   ├── migrations/                  // Database migration files
+│   └── seeders/                     // Database seeding scripts for initial data
+├── .env                             // Environment variables
+├── package.json                     // Dependencies and scripts for the project
+├── README.md                        // Project documentation
+└── Dockerfile                       // Dockerfile for containerizing the app
