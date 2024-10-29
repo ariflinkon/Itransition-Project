@@ -1,106 +1,252 @@
-import React, { useState, useEffect } from "react";
-import QuestionAdder from "./QuestionAdder";
-import api from "../../services/api";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/formeditor.css'; 
+import React from 'react';
+import PropTypes from 'prop-types';
+import { styled } from '@mui/material/styles';
+import { 
+  Grid, Paper, Typography, Tabs, Tab, Box, AppBar, Toolbar, Button, 
+  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, 
+  Snackbar, IconButton 
+} from '@mui/material';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import PaletteIcon from '@mui/icons-material/Palette';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SendIcon from '@mui/icons-material/Send';
+import FilterNoneIcon from '@mui/icons-material/FilterNone';
+import CloseIcon from '@mui/icons-material/Close';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import { useParams } from 'react-router-dom'; 
 
-const FormEditor = ({ templateId }) => {
-  console.log("Template ID:", templateId); // Add this line for debugging
-  const [title, setTitle] = useState("Untitled form");
-  const [description, setDescription] = useState("");
-  const [questions, setQuestions] = useState([]);
-  const [userId, setUserId] = useState(null);
+import QuestionsTab from './QuestionsTab';
+import ResponseTab from '../Response/ResponseTab';
+import formService from '../../services/formService';
+import auth from '../../services/authService';
 
-  useEffect(() => {
-    // Fetch user ID from the server
-    api.get('/api') // Assuming this endpoint returns the current user's details
-      .then(response => {
-        setUserId(response.data.id);
-      })
-      .catch(error => {
-        console.error("Error fetching user ID", error);
-      });
+// Styled components
+const Root = styled('div')({
+  flexGrow: 1,
+});
+
+const ToolbarContent = styled(Toolbar)(({ theme }) => ({
+  minHeight: 128,
+  alignItems: 'flex-start',
+  paddingTop: theme.spacing(1),
+}));
+
+const Title = styled(Typography)({
+  flexGrow: 1,
+  alignSelf: 'flex-end',
+  justifySelf: 'center',
+});
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+function EditForm() {
+  const { formId } = useParams();
+  const [value, setValue] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [user, setUser] = React.useState({});
+  const [formID, setFormID] = React.useState("");
+  const [formDetails, setFormDetails] = React.useState({});
+  const [openOfAlert, setOpenOfAlert] = React.useState(false);
+
+  React.useEffect(() => {
+    setUser(auth.getCurrentUser());
   }, []);
 
-  const handleSaveTemplate = () => {
-    const newTemplate = { title, description, questions }; 
-    
-    if (!userId) {
-      console.error("User ID not available");
+  React.useEffect(() => {
+    if (formId) {
+      setFormID(formId);
+      formService.getForm(formId)
+        .then((data) => {
+          setFormDetails(data);
+        })
+        .catch((error) => {
+          const resMessage =
+            (error.response && error.response.data && error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(resMessage);
+        });
+    }
+  }, [formId]);
+
+  const clipToClipboard = () => {
+    navigator.clipboard.writeText(window.location.origin + "/s/" + formDetails._id);
+    handleClickOfAlert();
+    handleClose();
+  };
+
+  const handleClickOfAlert = () => {
+    setOpenOfAlert(true);
+  };
+
+  const handleCloseOfAlert = (event, reason) => {
+    if (reason === 'clickaway') {
       return;
     }
-
-    api.post(`/api/templates`, { ...newTemplate, userId })
-      .then(response => {
-        console.log("Template saved", response.data);
-      })
-      .catch(error => {
-        console.error("Error saving template", error);
-      });
+    setOpenOfAlert(false);
   };
 
-  const addQuestion = (question) => {
-    setQuestions([...questions, question]);
+  const sendForm = () => {
+    handleClickOpen();
   };
 
-  const duplicateQuestion = (index) => {
-    const questionToDuplicate = questions[index];
-    setQuestions([...questions, { ...questionToDuplicate }]);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
-  const deleteQuestion = (index) => {
-    setQuestions(questions.filter((_, i) => i !== index));
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
-    <div className="form-editor container mt-4">
-      <div className="form-header p-3 mb-4 shadow-sm">
-        <input 
-          className="form-control mb-2"
-          placeholder="Form title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <input 
-          className="form-control mb-2"
-          placeholder="Form description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-      
-      <div className="questions-section">
-        <h2>Questions</h2>
-        {questions.length ? (
-          questions.map((q, index) => (
-            <div key={index} className="question-card card shadow-sm mb-3 p-3">
-              <div className="d-flex justify-content-between">
-                <div>
-                  <p className="question-text mb-1">Question: {q.text}</p>
-                  <small>Type: {q.type}</small>
-                </div>
-                <div className="question-options">
-                  <i className="fa fa-copy me-3" title="Duplicate" onClick={() => duplicateQuestion(index)}></i>
-                  <i className="fa fa-trash" title="Delete" onClick={() => deleteQuestion(index)}></i>
-                </div>
-              </div>
-              <div className="form-check mt-2">
-                <input className="form-check-input" type="checkbox" id={`required-${index}`} />
-                <label className="form-check-label" htmlFor={`required-${index}`}>
-                  Required
-                </label>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-muted">No questions added yet.</p>
-        )}
-        <QuestionAdder addQuestion={addQuestion} />
-      </div>
+    <div>
+     {/*  {formDetails.createdBy === user.id ? ( */}
+        <div>
+          <Root>
+            <AppBar position="static" style={{ backgroundColor: 'white' }} elevation={2}>
+              <ToolbarContent>
+                <IconButton
+                  edge="start"
+                  aria-label="form icon"
+                  style={{ color: '#140078' }}
+                >
+                  <ViewListIcon />
+                </IconButton>
+                <Title variant="h6" noWrap style={{ marginTop: '8.5px', color: 'black' }}>
+                  {formDetails.name}
+                </Title>
 
-      <button className="btn btn-primary mt-4" onClick={handleSaveTemplate}>Save Template</button>
+                <IconButton aria-label="star">
+                  <StarBorderIcon />
+                </IconButton>
+
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="Questions" />
+                  <Tab label="Responses" />
+                </Tabs>
+                <IconButton aria-label="send form" onClick={sendForm}>
+                  <SendIcon />
+                </IconButton>
+                <IconButton aria-label="palette">
+                  <PaletteIcon />
+                </IconButton>
+                <IconButton aria-label="visibility">
+                  <VisibilityIcon />
+                </IconButton>
+                <IconButton aria-label="settings">
+                  <SettingsIcon />
+                </IconButton>
+
+                <IconButton aria-label="more actions" edge="end">
+                  <MoreIcon />
+                </IconButton>
+                <IconButton aria-label="account" edge="end">
+                  <AccountCircleIcon />
+                </IconButton>
+              </ToolbarContent>
+            </AppBar>
+          </Root>
+
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Copy and share link."}</DialogTitle>
+            <DialogContent>
+              <StyledPaper>
+                <Grid container alignItems="center">
+                  <Grid item>
+                    <Typography variant="body1">{window.location.origin + "/s/" + formDetails._id}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <IconButton aria-label="copy link" onClick={clipToClipboard}>
+                      <FilterNoneIcon />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+              </StyledPaper>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            open={openOfAlert}
+            autoHideDuration={3000}
+            onClose={handleCloseOfAlert}
+            message="Copied to clipboard"
+            action={
+              <IconButton size="small" aria-label="close" color="inherit" onClick={handleCloseOfAlert}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            }
+          />
+
+          <TabPanel value={value} index={0}>
+            <QuestionsTab formData={formDetails} />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <ResponseTab formData={formDetails} formId={formID} />
+          </TabPanel>
+        </div>
+{/*       ) : (
+        <p>You're not the owner of the form</p>
+      )} */}
     </div>
   );
-};
+}
 
-export default FormEditor;
+export default EditForm;
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box>
+          <div>{children}</div>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
