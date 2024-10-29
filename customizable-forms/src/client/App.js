@@ -10,6 +10,7 @@ import Navbar from './components/Shared/Navbar';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Footer from './components/Shared/Footer';
+import PrivateRoute from './components/util/PrivateRoute';
 import FormEditor from './components/FormBuilder/FormEditor';
 import './i18n'; // For internationalization
 
@@ -27,7 +28,8 @@ const App = () => {
           <Route path="/user" element={<UserDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/form-editor" element={<FormEditor />} />
+          <Route path="/form/:formId" element={<FormEditor />} />
+          {/* <Route path="/form/:formId" element={<PrivateRoute><FormEditor /></PrivateRoute>} /> */}
         </Routes>
       </div>
       <Footer />
