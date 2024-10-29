@@ -1,25 +1,18 @@
-// src/server/models/form.model.js
 module.exports = (sequelize, DataTypes) => {
   const Form = sequelize.define('Form', {
     createdBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       references: {
-        model: 'Users',
+        model: 'User', 
         key: 'id'
       }
     },
     name: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     description: {
       type: DataTypes.STRING,
       defaultValue: ""
-    },
-    questions: {
-      type: DataTypes.JSON,
-      allowNull: false
     },
     stared: {
       type: DataTypes.BOOLEAN,
@@ -33,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     tableName: 'Forms'
   });
+
+  Form.associate = (models) => {
+    Form.hasMany(models.Question, { foreignKey: 'formId' });
+  };
 
   return Form;
 };

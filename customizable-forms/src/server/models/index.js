@@ -31,5 +31,8 @@ db.user = require('./user.model.js')(sequelize, DataTypes);
 db.response = require('./response.model.js')(sequelize, DataTypes);
 db.form = require('./form.model.js')(sequelize, DataTypes);
 db.image = require('./image.model.js')(sequelize, DataTypes);
+db.option = require('./option.model.js')(sequelize, DataTypes);
+db.question = require('./question.model.js')(sequelize, DataTypes);
+db.responseDetail = require('./responseDetail.model.js')(sequelize, DataTypes);
 
 module.exports = db;

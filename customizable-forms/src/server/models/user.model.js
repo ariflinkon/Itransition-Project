@@ -13,9 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    image: {
+      type: DataTypes.STRING
+    },
     createdForms: {
-      type: DataTypes.JSON,
-      allowNull: true
+      type: DataTypes.JSON
     }
   }, {
     timestamps: true,

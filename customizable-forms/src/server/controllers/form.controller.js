@@ -1,8 +1,7 @@
 const FormModel = require('../models/form.model.js')
 const UserModel = require('../models/user.model.js')
 const ResponseModel = require('../models/response.model.js')
-/* const jwt = require('jsonwebtoken');
-const jwtDecode = require('jwt-decode'); */
+
 
 
 module.exports = {
@@ -18,7 +17,7 @@ module.exports = {
     createForm: async(req,res)=>{     
         try {
              var data = {
-                createdBy : req.body.createdBy,
+                createdBy : req.user.id,
                 name: req.body.name,
                 description: req.body.description
              }
@@ -196,5 +195,3 @@ module.exports = {
     }
 
 }
-
-

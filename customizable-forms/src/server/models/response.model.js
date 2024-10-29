@@ -1,23 +1,23 @@
-// src/server/models/response.model.js
 module.exports = (sequelize, DataTypes) => {
   const Response = sequelize.define('Response', {
     formId: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Forms', 
+        model: 'Form',
         key: 'id'
       }
     },
     userId: {
       type: DataTypes.STRING
-    },
-    response: {
-      type: DataTypes.JSON // Storing responses as JSON
     }
   }, {
     timestamps: true,
     tableName: 'Responses'
   });
+
+  Response.associate = (models) => {
+    Response.hasMany(models.ResponseDetail, { foreignKey: 'responseId' });
+  };
 
   return Response;
 };
