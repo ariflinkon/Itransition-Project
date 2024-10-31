@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuth } from '../components/Auth/AuthContext';
 
-const API_URL = "http://localhost:5000/api/auth/";
+const API_URL = process.env.REACT_APP_API_AUTH_URL;
 
 function parseJwt(token) {
   try {
