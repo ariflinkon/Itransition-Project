@@ -1,6 +1,6 @@
 // src/server/models/index.js
 const { Sequelize, DataTypes } = require('sequelize');
-const dbConfig = require('../config/db.config');
+const dbConfig = require('../config/db.config.js');
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
