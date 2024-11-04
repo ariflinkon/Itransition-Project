@@ -30,7 +30,7 @@ export default function OneForm(props) {
       <StyledCard>
         <CardActionArea href={`/form/${form._id}`}>
           <StyledCardMedia
-            image="https://static.makeuseof.com/wp-content/uploads/2019/06/AutoGradingQuizResults-GoogleForms.jpg"
+            image="#image.png"
             title="Contemplative Reptile"
           />
           <CardContent>
