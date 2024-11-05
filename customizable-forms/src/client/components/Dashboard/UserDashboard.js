@@ -44,7 +44,7 @@ const UserDashboard = () => {
       </div>
 
       <div className="dashboard-section">
-        <h2>Your Forms</h2>
+        <h2>Your Forms:</h2>
         <div className="forms-list">
           {forms.length ? (
             forms.map(form => (
@@ -56,6 +56,7 @@ const UserDashboard = () => {
             ))
           ) : (
             <p>You have no submitted forms.</p>
+
           )}
         </div>
       </div>
