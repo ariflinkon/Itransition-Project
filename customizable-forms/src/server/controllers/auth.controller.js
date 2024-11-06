@@ -3,6 +3,30 @@ const User = db.user;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const authConfig = require("../config/auth.config");
+const axios = require("axios");
+
+const {
+  SALESFORCE_CLIENT_ID,
+  SALESFORCE_CLIENT_SECRET,
+  SALESFORCE_USERNAME,
+  SALESFORCE_PASSWORD,
+  SALESFORCE_SECURITY_TOKEN,
+} = process.env;
+
+const TOKEN_URL = "https://login.salesforce.com/services/oauth2/token";
+
+// Helper function to get Salesforce token
+async function getSalesforceToken() {
+  const payload = {
+    grant_type: 'password',
+    client_id: SALESFORCE_CLIENT_ID,
+    client_secret: SALESFORCE_CLIENT_SECRET,
+    username: SALESFORCE_USERNAME,
+    password: `${SALESFORCE_PASSWORD}${SALESFORCE_SECURITY_TOKEN}`,
+  };
+  const response = await axios.post(TOKEN_URL, null, { params: payload });
+  return response.data.access_token;
+}
 
 // User registration
 exports.register = async (req, res) => {
