@@ -9,6 +9,13 @@ const isValidId = (id) => {
   return Number.isInteger(Number(id)) && Number(id) > 0;
 };
 
+exports.getLoggedInUser = (req, res) => {
+  if (req.user) {
+      res.status(200).json(req.user);
+  } else {
+      res.status(401).json({ message: "User not authenticated" });
+  }
+};
 // Get all users (Admin Only)
 exports.getAllUsers = async (req, res) => {
   try {
