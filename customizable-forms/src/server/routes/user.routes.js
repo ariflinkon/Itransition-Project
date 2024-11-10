@@ -16,4 +16,7 @@ router.post("/unblock/:id", [authMiddleware, roleMiddleware("admin")], userContr
 // Delete a user (Admin only)
 router.delete("/delete/:id", [authMiddleware, roleMiddleware("admin")], userController.deleteUser);
 
+// Get logged-in user data
+router.get("/info", authMiddleware, userController.getLoggedInUser);
+
 module.exports = router;
